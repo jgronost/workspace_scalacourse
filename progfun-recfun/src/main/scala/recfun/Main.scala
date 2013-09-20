@@ -25,19 +25,19 @@ object Main {
    */
   def balance(chars: List[Char]): Boolean = {
     	def balance2 (chars: List[Char], counter: Int): Boolean = {
-    	    	if (chars.isEmpty  && counter == 0) true
-			    	else if (chars.isEmpty && counter != 0) false
-			    	else {
-				    	var char = chars.head
-				    	if (char == '(' ){
-				    		balance2(chars.tail, counter +1 );
-				    	}
-				    	else if(char == ')' ) {
-				    		if (counter ==0) false
-				    		else balance2(chars.tail, counter -1);
-				    	}
-				    	else  balance2(chars.tail, counter);
-				}
+	    	 def balance3(chars: List[Char], char: Char, counter: Int):Boolean = {
+		    	 if (char == '(' ){
+		    	    balance2(chars.tail, counter +1 );
+		    	  }
+		    	  else if(char == ')' ) {
+		    	    if (counter ==0) false
+		    	    else balance2(chars.tail, counter -1);
+		    	 }
+		    	  else  balance2(chars.tail, counter);
+		    }
+	    	if (chars.isEmpty  && counter == 0) true
+	    	else if (chars.isEmpty && counter != 0) false
+	    	else balance3(chars, chars.head, counter)
     	}
     	balance2(chars, 0)
     }                                        
