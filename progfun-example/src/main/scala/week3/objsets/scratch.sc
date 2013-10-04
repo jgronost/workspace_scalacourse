@@ -37,6 +37,4 @@ object scratch {
    !trends.isEmpty                                //> res6: Boolean = true
    trends.head.user == "a" || trends.head.user == "b"
                                                   //> res7: Boolean = true
-	 
-	 
 }

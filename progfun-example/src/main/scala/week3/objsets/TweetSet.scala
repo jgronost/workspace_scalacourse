@@ -55,7 +55,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-   def union(that: TweetSet): TweetSet
+   def union(that: TweetSet): TweetSet = that.filterAcc(twit => true,this)
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -111,8 +111,6 @@ class Empty extends TweetSet {
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
   
-  def union(that: TweetSet): TweetSet = that
-  
   def mostRetweeted: Tweet = null
   
    def descendingByRetweet: TweetList = Nil 
@@ -138,11 +136,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if (p(elem)) left.filterAcc(p, right.filterAcc(p, acc.incl(elem)))
     else left.filterAcc(p, right.filterAcc(p, acc))
   }
-  
-  def union(that: TweetSet): TweetSet = {
-    (left union right) union that incl elem
-  }
-  
+   
   def mostRetweeted: Tweet = {
    def max(Twit1: Tweet, Twit2: Tweet): Tweet = {
       if (Twit1.retweets > Twit2.retweets) Twit1 else Twit2
@@ -157,7 +151,6 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
       val mostret = mostRetweeted
       new Cons(mostret,remove(mostret).descendingByRetweet)
   }
-
 
 
   /**
@@ -213,17 +206,20 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(t => google.exists(s => t.text.contains(s)))
+  lazy val appleTweets: TweetSet = TweetReader.allTweets.filter(t => apple.exists(s => t.text.contains(s)))
+
 
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-  lazy val trending: TweetList = ???
+  lazy val trending: TweetList = googleTweets.union(appleTweets).descendingByRetweet
 }
 
 object Main extends App {
   // Print the trending tweets
+  println("start")
   GoogleVsApple.trending foreach println
+  println("end")
 }
