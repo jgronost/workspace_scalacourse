@@ -55,7 +55,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-   def union(that: TweetSet): TweetSet = that.filterAcc(twit => true,this)
+   def union(that: TweetSet): TweetSet = that.filterAcc(tw => true,this)
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
