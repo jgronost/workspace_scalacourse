@@ -1,6 +1,7 @@
 package week5
 
 object scratch {
+
 	val fruit = List("apples","oranges", "bananas")
                                                   //> fruit  : List[String] = List(apples, oranges, bananas)
 	val nums = List(1,2,3,4)                  //> nums  : List[Int] = List(1, 2, 3, 4)
@@ -20,27 +21,50 @@ object scratch {
  
  diag3.head                                       //> res2: List[Int] = List(1, 0, 0)
  
- empty head                                       //> java.util.NoSuchElementException: head of empty list
-                                                  //| 	at scala.collection.immutable.Nil$.head(List.scala:337)
-                                                  //| 	at scala.collection.immutable.Nil$.head(List.scala:334)
-                                                  //| 	at week5.scratch$$anonfun$main$1.apply$mcV$sp(week5.scratch.scala:20)
-                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
-                                                  //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
-                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
-                                                  //| orksheetSupport.scala:65)
-                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.$execute(Wor
-                                                  //| ksheetSupport.scala:75)
-                                                  //| 	at week5.scratch$.main(week5.scratch.scala:3)
-                                                  //| 	at week5.scratch.main(week5.scratch.scala)
+ //empty head
                                                   
 	def isort(xs: List[Int]): List[Int] = xs match{
 		case List() => List()
 		case y :: ys => insert (y, isort(ys))
-	}
+	}                                         //> isort: (xs: List[Int])List[Int]
 	
 	def insert(x: Int, xs: List[Int]): List[Int] = xs match{
 		case List() => List(x)
-		case y :: ys => if (x <= ys.head) x :: ys else ys.head :: insert(x, ys)
-	}
+		case y :: ys => if (x <= y) x :: xs else y :: insert(x, ys)
+	}                                         //> insert: (x: Int, xs: List[Int])List[Int]
+	
+	isort(List(5,3,4,1,2))                    //> res3: List[Int] = List(1, 2, 3, 4, 5)
+	
+ 	def times(chars: List[Char]): List[(Char, Int)] = {
+   timesCounter(List(), chars, chars.toSet)
+  }                                               //> times: (chars: List[Char])List[(Char, Int)]
+  
+  def timesCounter(pairs: List[(Char, Int)], chars: List[Char], set: Set[Char] ): List[(Char, Int)] = {
+    if (set.isEmpty) pairs
+    else {
+      val char = set.head
+      val count = chars.count(x => x == char)
+      timesCounter(List((char, count)) ::: pairs, chars, set.tail)
+    	
+    }
+    
+  }                                               //> timesCounter: (pairs: List[(Char, Int)], chars: List[Char], set: Set[Char])
+                                                  //| List[(Char, Int)]
+	
+	val chars = List ('b', 'a', 'a', 'c', 'g', 'b')
+                                                  //> chars  : List[Char] = List(b, a, a, c, g, b)
+	times( chars)                             //> res4: List[(Char, Int)] = List((g,1), (c,1), (a,2), (b,2))
+	
+	def sortPairs(xs: List[(Char, Int)]): List[(Char, Int)] = xs match{
+		case List() => List()
+		case y :: ys => insertPair (y, sortPairs(ys))
+	}                                         //> sortPairs: (xs: List[(Char, Int)])List[(Char, Int)]
+	
+	def insertPair(x: (Char, Int), xs: List[(Char, Int)]): List[(Char, Int)] = xs match{
+		case List() => List(x)
+		case y :: ys => if (x._2 <= y._2) x :: xs else y :: insertPair(x, ys)
+	}                                         //> insertPair: (x: (Char, Int), xs: List[(Char, Int)])List[(Char, Int)]
+	
+	sortPairs(times( chars))                  //> res5: List[(Char, Int)] = List((g,1), (c,1), (a,2), (b,2))
  
 }

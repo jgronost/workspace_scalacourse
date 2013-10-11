@@ -77,7 +77,18 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-  def times(chars: List[Char]): List[(Char, Int)] = ???
+ 	def times(chars: List[Char]): List[(Char, Int)] = {
+	  def timesCounter(pairs: List[(Char, Int)], chars: List[Char], set: Set[Char] ): List[(Char, Int)] = {
+	    if (set.isEmpty) pairs
+	    else {
+	      val char = set.head
+	      val count = chars.count(x => x == char)
+	      timesCounter(List((char, count)) ::: pairs, chars, set.tail)
+	    }
+	  } 
+    timesCounter(List(), chars, chars.toSet)
+  }                                              
+  
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -86,12 +97,35 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+  	def sortPairs(xs: List[(Char, Int)]): List[(Char, Int)] = xs match{
+		case List() => List()
+		case y :: ys => insertPair (y, sortPairs(ys))
+	}                                        
+	
+	def insertPair(x: (Char, Int), xs: List[(Char, Int)]): List[(Char, Int)] = xs match{
+		case List() => List(x)
+		case y :: ys => if (x._2 >= y._2) x :: xs else y :: insertPair(x, ys)
+	}                                        
+
+    def toLeaf (xs: List[(Char, Int)], leaves: List[Leaf] ):List[Leaf] = {
+      if (xs.isEmpty) leaves
+      else{
+        val pair = xs.head
+        toLeaf(xs.tail,   new Leaf(pair._1, pair._2) :: leaves )
+      }
+    }
+    toLeaf(sortPairs(freqs), List())
+  }
+  
+ 
 
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-  def singleton(trees: List[CodeTree]): Boolean = ???
+  def singleton(trees: List[CodeTree]): Boolean = {
+    trees.size == 1
+  }
 
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -105,7 +139,33 @@ object Huffman {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-  def combine(trees: List[CodeTree]): List[CodeTree] = ???
+  def combine(trees: List[CodeTree]): List[CodeTree] = {
+  	def sortTrees(xs: List[CodeTree]): List[CodeTree] = xs match{
+		case List() => List()
+		case y :: ys => insertTree (y, sortTrees(ys))
+	}                                        
+	
+	def insertTree(x: CodeTree, xs: List[CodeTree]): List[CodeTree] = xs match{
+		case List() => List(x)
+		case y :: ys => if (weight(x) <= weight(y)) x :: xs else y :: insertTree(x, ys)
+	} 
+    
+    if (trees.size < 2) trees
+    else {
+      val head = trees.head
+      val tail = trees.tail
+      
+      val head2 = tail.head
+      val tail2 = tail.tail
+      //Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int)
+      //val fork = makeCodeTree(head, head2)
+      val fork = new Fork(head, head2, chars(head) ::: chars(head2), weight(head) + weight(head2))
+      
+      val newWood = fork :: trees
+      sortTrees(newWood)
+    }
+    
+  }
 
   /**
    * This function will be called in the following way:
@@ -209,4 +269,5 @@ object Huffman {
    * and then uses it to perform the actual encoding.
    */
   def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  
 }
