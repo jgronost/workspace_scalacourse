@@ -4,6 +4,25 @@ import scala.io.Source
 
 object x {
 	val in = Source.fromURL("http://lamp.epfl.ch/files/content/sites/lamp/files/teaching/progfun/linuxwords.txt");
+                                                  //> java.net.ConnectException: Connection timed out: connect
+                                                  //| 	at java.net.PlainSocketImpl.socketConnect(Native Method)
+                                                  //| 	at java.net.PlainSocketImpl.doConnect(Unknown Source)
+                                                  //| 	at java.net.PlainSocketImpl.connectToAddress(Unknown Source)
+                                                  //| 	at java.net.PlainSocketImpl.connect(Unknown Source)
+                                                  //| 	at java.net.SocksSocketImpl.connect(Unknown Source)
+                                                  //| 	at java.net.Socket.connect(Unknown Source)
+                                                  //| 	at java.net.Socket.connect(Unknown Source)
+                                                  //| 	at sun.net.NetworkClient.doConnect(Unknown Source)
+                                                  //| 	at sun.net.www.http.HttpClient.openServer(Unknown Source)
+                                                  //| 	at sun.net.www.http.HttpClient.openServer(Unknown Source)
+                                                  //| 	at sun.net.www.http.HttpClient.<init>(Unknown Source)
+                                                  //| 	at sun.net.www.http.HttpClient.New(Unknown Source)
+                                                  //| 	at sun.net.www.http.HttpClient.New(Unknown Source)
+                                                  //| 	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(Unknown 
+                                                  //| Source)
+                                                  //| 	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(Unknown Sour
+                                                  //| ce
+                                                  //| Output exceeds cutoff limit.
 	val words = in.getLines.toList filter (word => word forall (chr => chr.isLetter))
 
 //	val words = List("asafsd", "afsdf", "asdfssdf" ,"oyieoihsdf", "slhsdf-hg") filter (word => word forall (chr => chr.isLetter))
