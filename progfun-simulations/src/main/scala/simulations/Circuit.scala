@@ -76,39 +76,21 @@ abstract class CircuitSimulator extends Simulator {
 		inverter(notOut, output)
   }
 
-  def demux(in: Wire, c: List[Wire], out: List[Wire]) {
-   if (c isEmpty) {
-     println(out)
-     out
-   }
-   if (c.size == 1){
-      demux(in, c.tail, oneToTwoDemux(in, c.head)) 
-   }
-   else if (c.size == 2){
-     val c1 = c.head
-     val c2 = c.tail.head;
-     val d1 = oneToTwoDemux(in, c1)
-     val d21 = oneToTwoDemux(d1.head, c2)
-     val d22 = oneToTwoDemux(d1.tail.head, c2) 
-     demux(in, c, d21 ::: d22 )
-   }
-   else if (c.size > 2 && c.size % 4 == 0){
-      
-    } 
-    
-    def oneToTwoDemux(in: Wire, c: Wire): List[Wire] = {
-      val notC, notCnot = new Wire
-      
-      val out1 = new Wire
-      val out2 = new Wire
-      inverter(c, notC)
-      inverter(notC, notCnot)
-      
-      andGate(in, notC, out1)
-      andGate(in, notCnot, out1)
-      println(out1 :: out2 :: Nil)
-      out1 :: out2 :: Nil
-    }
+ 
+   def demux(in: Wire, c: List[Wire], out: List[Wire]) {
+	c match {
+		case Nil => andGate(in, in, out(0))
+		case x::xs => {
+			val in1, in2, notX = new Wire
+			andGate(in, x, in1)
+			inverter(x, notX)
+			andGate(in, notX, in2)
+			 
+			val n = out.length / 2
+			demux(in1, xs, out take n)
+			demux(in2, xs, out drop n)
+		}
+	}
   }
 
 }
